@@ -4,7 +4,7 @@ from tkinter import messagebox
 import servicetest
 from lxml import etree as ET
 import user_data_handler as udata
-import defs, sendEmail, os, psutil, time, smtplib
+import defs, os, psutil, time, smtplib
 from email.message import EmailMessage
 import concurrent.futures
 
