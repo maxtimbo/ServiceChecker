@@ -60,8 +60,9 @@ class MainApplication(ttk.Frame):
         self.display_service_list = defs.services
 
         # Task Scheduler Variables
-        self.scheduler_triggers_logon = tk.BooleanVar()
-        self.scheduler_triggers_logon.set(False)
+        ######
+        ## Place holder during dev
+        ######
 
         # Email Tab
         self.email_instructions_lbl = ttk.LabelFrame(self.email_tab, text="Intructions:", width=36)
@@ -169,13 +170,7 @@ class MainApplication(ttk.Frame):
         self.scheduler_general_author_txt = ttk.Label(self.scheduler_general_lbl, text="Tim Finley")
         self.scheduler_general_description_lbl = ttk.Label(self.scheduler_general_lbl, text="Description: ")
         self.scheduler_general_description_txt = ttk.Label(self.scheduler_general_lbl, text="This task monitors specified services to ensure their installation is still present in case of Windows Updates or Anti-Virus software unintentional uninstallations. The task will email a designated user or users in case any services are not found or are not running on the system.", wraplength=350)
-        # Triggers
-        self.scheduler_triggers_lbl = ttk.LabelFrame(self.task_scheduler, text="Triggers")
-        self.scheduler_triggers_at_logon = ttk.Label(self.scheduler_triggers_lbl, text="At Logon:")
-        self.scheduler_triggers_at_logon_btn = ttk.Checkbutton(self.scheduler_triggers_lbl, text="At Logon: ", variable=self.scheduler_triggers_logon, takefocus="off")
 
-        # Task Scheduler Tab Positional
-        # General
         self.scheduler_instructions_lbl.pack(side="left", padx=(20, 10), pady=20, fill="y")
         self.scheduler_instructions_txt.pack()
         self.scheduler_general_lbl.pack(fill="x", padx=(10, 20), pady=(20, 5), anchor="w")
@@ -187,12 +182,58 @@ class MainApplication(ttk.Frame):
         self.scheduler_general_author_txt.grid(row=2, column=1, padx=0, pady=0, sticky="w")
         self.scheduler_general_description_lbl.grid(row=3, column=0, padx=0, pady=0, sticky="nw")
         self.scheduler_general_description_txt.grid(row=3, column=1, padx=0, pady=0, sticky="w")
+
         # Triggers
-        self.scheduler_triggers_lbl.pack(fill="x", padx=(10,20), pady=5, anchor="w")
-        self.scheduler_triggers_at_logon.grid(row=0, column=0)
-        self.scheduler_triggers_at_logon_btn.grid(row=0, column=1, sticky="e")
-        self.scheduler_triggers_at_logon_btn.config(variable=None)
-        print(self.scheduler_triggers_at_logon_btn.cget("variable"))
+        # Triggers Variables (Move these to the top of the code)
+        self.scheduler_triggers_logon = tk.IntVar()
+        self.scheduler_triggers_logon.set(0)
+        self.scheduler_triggers_delay = tk.IntVar()
+        self.scheduler_triggers_delay.set(0)
+        self.scheduler_triggers_delay_var = tk.StringVar()
+        self.scheduler_triggers_daily = tk.IntVar()
+        self.scheduler_triggers_daily.set(0)
+        self.scheduler_triggers_recur = tk.IntVar()
+        self.scheduler_triggers_recur.set("")
+        self.scheduler_triggers_hours = tk.StringVar()
+        self.scheduler_triggers_repeat = tk.IntVar()
+        self.scheduler_triggers_repeat.set(0)
+
+        #####
+        self.scheduler_triggers_lbl = ttk.LabelFrame(self.task_scheduler, text="Triggers")
+        self.scheduler_frame_left = ttk.Frame(self.scheduler_triggers_lbl)
+        self.scheduler_frame_right = ttk.Frame(self.scheduler_triggers_lbl)
+
+        self.scheduler_triggers_lbl.pack(fill="x", padx=(10,20), pady=5, anchor="w", ipadx=10, ipady=10)
+        self.scheduler_frame_left.pack(side="left")
+        self.scheduler_frame_right.pack(side="left")
+
+        # Schedulers Frame Left
+        self.scheduler_triggers_at_logon_btn = ttk.Checkbutton(self.scheduler_frame_left, text="At Logon", variable=self.scheduler_triggers_logon)
+        self.scheduler_triggers_logon_delay_btn = ttk.Checkbutton(self.scheduler_frame_left, text="Delay", variable=self.scheduler_triggers_delay)
+        self.scheduler_triggers_logon_delay_select = ttk.Combobox(self.scheduler_frame_left, textvariable=self.scheduler_triggers_delay_var, state="readonly", width=10)
+        self.scheduler_triggers_logon_delay_select['values'] = ("15 Minutes", "30 Minutes", "1 hour")
+        self.scheduler_triggers_logon_delay_select.current(0)
+
+        self.scheduler_triggers_at_logon_btn.grid(row=0, column=0, sticky="w")
+        self.scheduler_triggers_logon_delay_btn.grid(row=1, column=0, sticky="w")
+        self.scheduler_triggers_logon_delay_select.grid(row=2, column=0, columnspan=8, sticky="w")
+
+        # Schedulers Frame Right
+        self.scheduler_triggers_daily_btn = ttk.Checkbutton(self.scheduler_frame_right, text="Daily", variable=self.scheduler_triggers_daily)
+        self.scheduler_triggers_recur_lbl1 = ttk.Label(self.scheduler_frame_right, text="Recur every: ")
+        self.scheduler_triggers_recur_box = ttk.Entry(self.scheduler_frame_right, textvariable=self.scheduler_triggers_recur, width=3)
+        self.scheduler_triggers_recur_lbl2 = ttk.Label(self.scheduler_frame_right, text="days.")
+        self.scheduler_triggers_recur_hours_btn = ttk.Checkbutton(self.scheduler_frame_right, text="Repeat task every: ", variable=self.scheduler_triggers_repeat)
+        self.scheduler_triggers_recur_hours_select = ttk.Combobox(self.scheduler_frame_right, textvariable=self.scheduler_triggers_hours, state="readonly", width=10)
+        self.scheduler_triggers_recur_hours_select['values'] = ("5 minutes", "10 minutes", "15 minutes", "30 minutes", "1 hour")
+        self.scheduler_triggers_recur_hours_select.current(4)
+
+        self.scheduler_triggers_daily_btn.grid(row=0, column=0, padx=(50, 0))
+        self.scheduler_triggers_recur_lbl1.grid(row=1, column=0, padx=(50, 0))
+        self.scheduler_triggers_recur_box.grid(row=1, column=1)
+        self.scheduler_triggers_recur_lbl2.grid(row=1, column=2)
+        self.scheduler_triggers_recur_hours_btn.grid(row=2, column=0, columnspan=2, padx=(50, 0), sticky="w")
+        self.scheduler_triggers_recur_hours_select.grid(row=2, column=2, columnspan=5)
 
         # Populate Notebook
         self.notebook.add(self.email_tab, text="Email Configuration")
